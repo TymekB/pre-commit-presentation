@@ -1,40 +1,190 @@
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<title>reveal.js</title>
+<head>
+    <meta charset="utf-8">
 
-		<link rel="stylesheet" href="dist/reset.css">
-		<link rel="stylesheet" href="dist/reveal.css">
-		<link rel="stylesheet" href="dist/theme/black.css">
+    <title>Pre-commit - czyli jak sprawnie zarządzać git hooknpm stami</title>
 
-		<!-- Theme used for syntax highlighted code -->
-		<link rel="stylesheet" href="plugin/highlight/monokai.css">
-	</head>
-	<body>
-		<div class="reveal">
-			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
-			</div>
-		</div>
+    <meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+    <meta name="author" content="Hakim El Hattab">
 
-		<script src="dist/reveal.js"></script>
-		<script src="plugin/notes/notes.js"></script>
-		<script src="plugin/markdown/markdown.js"></script>
-		<script src="plugin/highlight/highlight.js"></script>
-		<script>
-			// More info about initialization & config:
-			// - https://revealjs.com/initialization/
-			// - https://revealjs.com/config/
-			Reveal.initialize({
-				hash: true,
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-				// Learn about plugins: https://revealjs.com/plugins/
-				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
-			});
-		</script>
-	</body>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    <link rel="stylesheet" href="dist/reset.css">
+    <link rel="stylesheet" href="dist/reveal.css">
+    <link rel="stylesheet" href="dist/theme/black.css" id="theme">
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="plugin/highlight/monokai.css">
+
+    <style>
+        .container {
+            display: flex;
+        }
+
+        .col {
+            flex: 1;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="reveal">
+
+    <!-- Any section element inside of this container is displayed as a slide -->
+    <div class="slides">
+        <section>
+            <h2 style="text-transform: lowercase; color: #f8b424">pre-commit</h2>
+            <p style="font-size: 25px;">
+                czyli jak sprawnie zarządzać git hookami
+            </p>
+        </section>
+
+        <section>
+            <section id="fragments">
+                <h4>Czym są git hooki?</h4>
+                <img src="images/img2.png" style="width: 50%; height: 50%" class="fragment">
+            </section>
+        </section>
+
+        <section>
+            <h4>Jaki <span style="color: red">problem</span> rozwiązują git-hooki?</h4>
+            <ol style="font-size: 20px;">
+                <li class="fragment">Oszczędzamy czas - nie musimy ponownie przełączać się do IDE i poprawiać błędy</li>
+                <li class="fragment">Brak commitów typu: "fix phpstan", "fix csfixer"</li>
+            </ol>
+        </section>
+
+        <section data-auto-animate>
+            <h4 data-id="code-title">Po co ten Pre-commit?</h4>
+            <pre data-id="code-animation" class="fragment" style="font-size: 14px;">
+                <code class="yaml" data-trim data-line-numbers="|2,8,13,19|4-7,10-11,15-16,21-22|12,17,23">
+                        repos:
+                            -   repo: https://github.com/TymekB/pre-commit-php
+                                rev: 1.0.3
+                                hooks:
+                                    -   id: php-cs
+                                        files: \.(php)$
+                                        args: [ --standard=PSR1 -p ]
+                            -   repo: https://github.com/TymekB/pre-commit-php
+                                rev: 1.0.3
+                                hooks:
+                                    -   id: php-unit
+                                        stages: [ pre-push ]
+                            -   repo: https://github.com/TymekB/pre-commit-php
+                                rev: 1.0.3
+                                hooks:
+                                    -   id: php-stan
+                                        stages: [ pre-push ]
+                                files: \.(php)$
+                            -   repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
+                                rev: v9.13.0
+                                hooks:
+                                    -   id: commitlint
+                                        stages: [ commit-msg ]
+					</code></pre>
+        </section>
+
+        <section>
+            <h4>Dokumentacja</h4>
+            <a style="font-size: 20px;" href="https://pre-commit.com/hooks.html">https://pre-commit.com/hooks.html</a>
+            <img src="images/img_1.png" />
+        </section>
+
+        <section>
+            <h4>Instalacja</h4>
+            <div style="font-size: 40px">
+                <pre class="fragment"><code class="bash">brew install pre-commit</code></pre>
+                <pre class="fragment">
+                <code data-trim class="bash">
+                    cd inventory-api
+                    pre-commit install
+                </code>
+            </pre>
+                <pre class="fragment">
+                <code data-trim class="bash">
+                    pre-commit install --hook-type pre-push --hook-type commit-msg
+                </code>
+            </pre>
+            </div>
+        </section>
+
+        <section>
+            <h4>Przykład</h4>
+            <div style="position:relative">
+                <p class="fragment fade-out"
+                   style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0;"
+                   data-fragment-index="0">
+                    <img src="images/pre_commit_ex1.png"/>
+                </p>
+                <p class="fragment fade-in"
+                   style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0;"
+                   data-fragment-index="0">
+                    <img src="images/pre_commit_ex2.png"/>
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h4>Jak wyłączyć</h4>
+            <div style="font-size: 40px">
+                <pre class="fragment">
+                    <code class="bash">pre-commit uninstall</code>
+                </pre>
+
+                <pre class="fragment">
+                    <code data-trim class="bash">
+                        git commit --no-verify -m "commit message"
+                    </code>
+                </pre>
+                <pre class="fragment">
+                    <code data-trim class="bash">
+                        PRE_COMMIT_DISABLE=true git commit -m "commit message"
+                    </code>
+                </pre>
+            </div>
+        </section>
+
+        <section>
+            <h4>Korzystanie z gita w PHPStorm'ie</h4>
+            <div class="fragment">
+                <img src="images/phpstorm_ex2.png"/>
+            </div>
+        </section>
+
+        <section>
+            <h3>Pytania</h3>
+        </section>
+    </div>
+
+</div>
+
+<script src="dist/reveal.js"></script>
+<script src="plugin/zoom/zoom.js"></script>
+<script src="plugin/notes/notes.js"></script>
+<script src="plugin/search/search.js"></script>
+<script src="plugin/markdown/markdown.js"></script>
+<script src="plugin/highlight/highlight.js"></script>
+<script>
+
+    // Also available as an ES module, see:
+    // https://revealjs.com/initialization/
+    Reveal.initialize({
+        controls: true,
+        progress: true,
+        center: true,
+        hash: true,
+
+        // Learn about plugins: https://revealjs.com/plugins/
+        plugins: [RevealZoom, RevealNotes, RevealSearch, RevealMarkdown, RevealHighlight]
+    });
+</script>
+
+</body>
 </html>
